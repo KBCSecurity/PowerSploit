@@ -13,7 +13,7 @@
 
 ########################################################
 #
-# PSReflect code for Windows API access
+# Ma he bitte änder die Signatur durch des ok?
 # Author: @mattifestation
 #   https://raw.githubusercontent.com/mattifestation/PSReflect/master/PSReflect.psm1
 #

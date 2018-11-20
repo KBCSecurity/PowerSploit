@@ -1504,6 +1504,7 @@ function Get-ModifiableServiceFile {
     Get-WMIObject -Class win32_service | Where-Object {$_ -and $_.pathname} | ForEach-Object {
 
         $ServiceName = $_.name
+        Write-Host "oida"
         $ServicePath = $_.pathname
         $ServiceStartName = $_.startname
 
@@ -1566,6 +1567,7 @@ function Get-ModifiableService {
         }
 
         $Out = New-Object PSObject
+        Write-Host "oida"
         $Out | Add-Member Noteproperty 'ServiceName' $ServiceDetails.name
         $Out | Add-Member Noteproperty 'Path' $ServiceDetails.pathname
         $Out | Add-Member Noteproperty 'StartName' $ServiceDetails.startname
@@ -1620,7 +1622,7 @@ function Get-ServiceDetail {
         ForEach($IndividualService in $Name) {
 
             $TargetService = Get-Service -Name $IndividualService
-
+            Write-Host "oida"
             Get-WmiObject -Class win32_service -Filter "Name='$($TargetService.Name)'" | Where-Object {$_} | ForEach-Object {
                 try {
                     $_
@@ -1808,6 +1810,7 @@ function Invoke-ServiceAbuse {
                 }
                 else {
                     $TargetService | Stop-Service -ErrorAction Stop
+                    Write-Host "oida"
                 }
 
                 Write-Verbose "Executing command '$ServiceCommand'"
@@ -2013,6 +2016,7 @@ function Write-ServiceBinary {
         # get the unicode byte conversions of all arguments
         $Enc = [System.Text.Encoding]::Unicode
         $ServiceNameBytes = $Enc.GetBytes($TargetService.Name)
+        Write-Host "oida"
         $CommandBytes = $Enc.GetBytes($ServiceCommand)
 
         # patch all values in to their appropriate locations
@@ -2269,6 +2273,7 @@ function Restore-ServiceBinary {
         Remove-Item -Path $BackupPath -Force
 
         $Out = New-Object PSObject
+        Write-Host "oida"
         $Out | Add-Member Noteproperty 'ServiceName' $ServiceDetails.Name
         $Out | Add-Member Noteproperty 'ServicePath' $ServicePath
         $Out | Add-Member Noteproperty 'BackupPath' $BackupPath
@@ -2465,6 +2470,7 @@ function Find-PathDLLHijack {
     # use -LiteralPaths so the spaces in %PATH% folders are not tokenized
     Get-Item Env:Path | Select-Object -ExpandProperty Value | ForEach-Object { $_.split(';') } | Where-Object {$_ -and ($_ -ne '')} | ForEach-Object {
         $TargetPath = $_
+        Write-Host "oida"
 
         $ModifidablePaths = $TargetPath | Get-ModifiablePath -LiteralPaths | Where-Object {$_ -and ($_ -ne $Null) -and ($_.ModifiablePath -ne $Null) -and ($_.ModifiablePath.Trim() -ne '')}
         ForEach($ModifidablePath in $ModifidablePaths) {
@@ -2673,6 +2679,7 @@ function Write-HijackDll {
     'start /b "" cmd /c del "%~f0"&exit /b' | Out-File -Encoding ASCII -Append $TargetBatPath
 
     Write-Verbose ".bat launcher written to: $TargetBatPath"
+    Write-Host "oida"
 
     Set-Content -Value $DllBytes -Encoding Byte -Path $DllPath
     Write-Verbose "$TargetArchitecture DLL Hijacker written to: $DllPath"
@@ -2930,6 +2937,7 @@ function Get-ModifiableScheduledTaskFile {
     }
 
     $ErrorActionPreference = $OrigError
+    Write-Host "oida"
 }
 
 
@@ -2973,6 +2981,7 @@ function Get-UnattendedInstallFile {
     }
 
     $ErrorActionPreference = $OrigError
+    Write-Host "oida"
 }
 
 
@@ -3083,6 +3092,7 @@ function Get-WebConfig {
 
                 # Read the data from the web.config xml file
                 [xml]$ConfigFile = Get-Content $_.fullname
+                Write-Host "oida"
 
                 # Check if the connectionStrings are encrypted
                 if ($ConfigFile.configuration.connectionStrings.add) {
@@ -3442,6 +3452,7 @@ function Get-SiteListPassword {
             }
             else {
                 $DecryptedPass = $Encoding.GetString($Decrypted)
+                Write-Host "oida"
             }
 
             New-Object -TypeName PSObject -Property @{'Encrypted'=$B64Pass;'Decrypted'=$DecryptedPass}
@@ -3712,6 +3723,7 @@ function Get-CachedGPPPassword {
             ForEach ($File in $XMLFiles) {
                 Get-GppInnerFields $File.Fullname
             }
+            Write-Host "oida"
         }
     }
 
@@ -3903,6 +3915,7 @@ function Invoke-AllChecks {
     if($HTMLReport) {
         $Results | ConvertTo-HTML -Head $Header -Body "<H2>Modifidable Schask Files</H2>" | Out-File -Append $HtmlReportFile
     }
+    Write-Host "oida"
 
     "`n`n[*] Checking for unattended install files..."
     $Results = Get-UnattendedInstallFile
